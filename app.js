@@ -6,19 +6,6 @@ require('dotenv').config(); // Para usar variables de entorno
 // Conexion y esquema de la base de datos ------------------------
 const mongoose = require("mongoose");
 
-mongoose.set('strictQuery', false); // Para evitar el error de que no se puede actualizar un documento que no existe
-// Conectarse a la base de datos especificada
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`Mongo connected: ${conn.connection.host}`);
-  }
-  catch (err) {
-    console.error(err);
-    process.exit(1);
-  }
-}
-
 const itemsSchema = {
   name: String,
 };
@@ -47,6 +34,20 @@ const listSchema = {
 const List = mongoose.model("List", listSchema);
 // ------------------------
 const app = express();
+const PORT = process.env.PORT || 3000
+
+mongoose.set('strictQuery', false); // Para evitar el error de que no se puede actualizar un documento que no existe
+// Conectarse a la base de datos especificada
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log(`Mongo Connected: ${conn.connection.host}`);
+  }
+  catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+}
 
 app.set('view engine', 'ejs');
 
@@ -152,7 +153,7 @@ app.post("/delete",function(req, res){
 });
 
 connectDB().then(() => {
-  app.listen(3000, function() {
+  app.listen(PORT, function() {
     console.log("Server started on port 3000");
   });
 });
